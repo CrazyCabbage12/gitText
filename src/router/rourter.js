@@ -2,9 +2,10 @@ import { createMemoryHistory, createRouter } from 'vue-router'
 import Home from "@/components/HomePage/Home.vue";
 import navigation from "@/components/HomePage/navigation.vue";
 
-
 const routes = [
-    { path: '/',name:Home, component: Home },
+    { path: '/',
+        name:Home,
+        component: () => import("../components/HomePage/Home.vue"), },
     { path: '/navigation',name:navigation, component: navigation },
 
 ]
