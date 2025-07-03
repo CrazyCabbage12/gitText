@@ -5,10 +5,10 @@
     <common-aside/>
     <el-container>
       <el-header class="el-header">
-        <common-header />
+        <CommomHeader></CommomHeader>
       </el-header>
       <el-main class="el-main">
-        main
+        <router-view></router-view>
       </el-main>
     </el-container>
 
@@ -19,11 +19,12 @@
 
 <script setup>
 import CommonAside from "@/components/Part/CommonAside.vue";
+import CommomHeader from "@/components/Part/CommomHeader.vue";
 
 </script>
 
-<style>
-.el-container,.home {
+<style scoped lang="less">
+.home,.el-container {
   height: 100%;
 }
 .el-header{

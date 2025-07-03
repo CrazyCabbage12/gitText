@@ -1,7 +1,9 @@
 <script setup>
 import {ref,computed} from 'vue'
 import {useRouter} from "vue-router";
+import {useStore} from "@/stores/index.js";
 const router = useRouter();
+
 
 const list=ref([
   {
@@ -49,16 +51,22 @@ const list=ref([
 const nochilden = computed(()=>list.value.filter(item=>!item.childen))
 const haschilden = computed(()=>list.value.filter(item=>item.childen))
 
+
+
+const store = useStore();
+const isCollaps = computed(()=>store.state.isCollapse)
+const width = computed(()=>store.state.isCollapse ? '64px' : '180p')
 </script>
 
 <template>
-  <el-aside width="200px">
+  <el-aside width="width">
         <el-menu
             background-color="#545c64"
             text-color="#fff"
+            :collapse="isCollaps"
         >
-          <h3>卷心菜个人工具箱</h3>
-
+          <h3 v-show="!isCollaps">卷心菜个人工具箱</h3>
+          <h3 v-show="isCollaps">工具箱</h3>
           <el-menu-item
               v-for="item in nochilden"
               :index="item.path"
@@ -66,7 +74,8 @@ const haschilden = computed(()=>list.value.filter(item=>item.childen))
           >
               <component class="icons" :is="item.icon"></component>
             <span>{{item.label }}</span>
-            </el-menu-item>
+          </el-menu-item>
+
             <el-sub-menu
                 v-for="item in haschilden"
                 :index="item.path"
@@ -74,11 +83,11 @@ const haschilden = computed(()=>list.value.filter(item=>item.childen))
             >
               <template #title>
                 <component class="icons" :is="item.icon"></component>
-                <span>{{item.label }}</span>
+                <span>{{ item.label }}</span>
               </template>
               <el-menu-item-group>
                 <el-menu-item
-                    v-for="(subItem,subIndex) in item.children"
+                    v-for="(subItem,subIndex) in item.childen"
                     :index="subItem.path"
                     :key="subItem.path"
                 >
