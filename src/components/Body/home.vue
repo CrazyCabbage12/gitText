@@ -23,7 +23,7 @@
 </template>
 
 <script setup>
-import {onMounted, onUnmounted, ref} from "vue";
+import {onMounted, onUnmounted, ref,getCurrentInstance} from "vue";
 import * as echarts from 'echarts';
 import axios from "axios";
 const ImgsData = ref([
@@ -199,6 +199,7 @@ const initChart2 = () => {
 onMounted(() => {
   initChart1();
   initChart2();
+  getTableData()
 });
 
 // 在组件卸载时销毁 ECharts 实例
@@ -211,15 +212,11 @@ onUnmounted(() => {
   }
 });
 
-axios({
-  url: "/getTableData",
-  method: 'get',
-}).then(res => {
-  console.log(res.data);
-}).catch(err => {
-  console.error('Error:', err);
-});
-
+const {proxy} = getCurrentInstance()
+const getTableData = async () => {
+  const data = await proxy.$api.GetTableData();
+  console.log(data);
+}
 </script>
 <style scoped lang="less">
 .el-row {

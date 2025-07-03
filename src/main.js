@@ -8,8 +8,11 @@ import "@/assets/css/index.scss"
 import {createPinia} from "pinia";
 import "@/assets/css/font/font.css"
 import  "@/api/mock.js";
+import api from "@/api/api";
+
 
 const app = createApp(App)
+app.config.globalProperties.$api = api;
 const  pinia = createPinia();
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
     app.component(key, component)
