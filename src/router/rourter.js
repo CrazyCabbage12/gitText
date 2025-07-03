@@ -3,7 +3,8 @@ import Home from "@/components/HomePage/Home.vue";
 import navigation from "@/components/Part/CommomHeader.vue";
 
 const routes = [
-    { path: '/',
+    {
+        path: '/',
         name:"Home",
         component: () => import("@/components/HomePage/Home.vue"),
         redirect: '/Home1',

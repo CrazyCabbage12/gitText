@@ -56,6 +56,9 @@ const haschilden = computed(()=>list.value.filter(item=>item.childen))
 const store = useStore();
 const isCollaps = computed(()=>store.state.isCollapse)
 const width = computed(()=>store.state.isCollapse ? '64px' : '180p')
+const GotoPath = (path)=>{
+  router.push(path)
+}
 </script>
 
 <template>
@@ -109,7 +112,7 @@ const width = computed(()=>store.state.isCollapse ? '64px' : '180p')
 .el-menu{
   border-right: none;
   h3{
-    line-height: 48px;
+    line-height: 38px;
     color: #fff;
     text-align: center;
   }

@@ -7,6 +7,8 @@ import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import "@/assets/css/index.scss"
 import {createPinia} from "pinia";
 import "@/assets/css/font/font.css"
+import  "@/api/mock.js";
+
 const app = createApp(App)
 const  pinia = createPinia();
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
