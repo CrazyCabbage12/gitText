@@ -7,7 +7,7 @@ const routes = [
         path: '/',
         name:"Home",
         component: () => import("@/components/HomePage/Home.vue"),
-        redirect: '/Home1',
+        redirect: "/user",
         children:[
             {
                 path: 'Home1',
@@ -15,13 +15,12 @@ const routes = [
                 component: () => import("@/components/Body/home.vue"),
             },
             {
-                path: 'Home2',
-                name: "Home2",
+                path: 'user',
+                name: "user",
                 component: () => import("@/components/Body/OptionSelect.vue"),
             }
         ]
     },
-
 ]
 
 const router = createRouter({

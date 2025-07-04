@@ -200,6 +200,7 @@ onMounted(() => {
   initChart1();
   initChart2();
   getTableData()
+  GetCountData();
 });
 
 // 在组件卸载时销毁 ECharts 实例
@@ -215,6 +216,11 @@ onUnmounted(() => {
 const {proxy} = getCurrentInstance()
 const getTableData = async () => {
   const data = await proxy.$api.GetTableData();
+  console.log(data.code);
+}
+
+const GetCountData = async () =>{
+  const data = await proxy.$api.GetCountData();
   console.log(data);
 }
 </script>

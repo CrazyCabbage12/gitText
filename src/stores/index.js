@@ -7,8 +7,6 @@ function initState(){
 }
 export const useStore = defineStore('StoreData', () => {
     const state = ref(initState())
-
-
     return {
     state,
     };

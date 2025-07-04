@@ -10,7 +10,6 @@ import "@/assets/css/font/font.css"
 import  "@/api/mock.js";
 import api from "@/api/api";
 
-
 const app = createApp(App)
 app.config.globalProperties.$api = api;
 const  pinia = createPinia();

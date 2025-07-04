@@ -6,5 +6,17 @@ export default {
             url:'/getTableData',
             method:"get"
         })
-    }
+    },
+    GetCountData(){
+        return request({
+            url:'/GetCountData',
+            method:"get"
+        })
+    },
+    GetUserData(){
+        return request({
+            url:'/GetUserData',
+            method:"get"
+        })
+    },
 }
