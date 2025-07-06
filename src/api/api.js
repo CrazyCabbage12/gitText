@@ -13,10 +13,11 @@ export default {
             method:"get"
         })
     },
-    GetUserData(){
+    GetUserData(data){
         return request({
             url:'/GetUserData',
-            method:"get"
+            method:"get",
+            data,
         })
     },
 }
