@@ -1,36 +1,61 @@
-import { createMemoryHistory, createRouter } from 'vue-router'
-import Home from "@/components/HomePage/Home.vue";
-import main from "@/components/Body/main.vue"
-import OptionSelect from "@/components/Body/OptionSelect.vue"
+import { createMemoryHistory, createRouter } from 'vue-router';
+import Dashboard from "@/components/HomePage/main.vue";
+import ProductManagement from "@/components/Body/ProductManagement.vue";
+import UserManagement from "@/components/Body/UserManagement.vue";
+import Echart from "@/components/Body/Echart.vue";
+import Donate from "@/components/Body/Donate.vue";
+import Home  from "@/components/Body/Home.vue"
 
 const routes = [
     {
         path: '/',
-        name: "Home",
-        component: Home,
+        name: "main",
+        component: Dashboard,
         children: [
             {
                 path: '',
-                name: "HomeDefault",
-                component: () => import("@/components/Body/main.vue"), // 默认加载的内容
+                name: "Dashboard",
+                component: Home,
             },
             {
-                path: 'Home1',
-                name: "Home1",
-                component: () => import("@/components/Body/main.vue"),
+                path: 'product-management',
+                name: "ProductManagement",
+                component: ProductManagement,
             },
             {
-                path: 'user',
-                name: "user",
-                component: () => import("@/components/Body/OptionSelect.vue"),
+                path: 'user-management',
+                name: "UserManagement",
+                component: UserManagement,
+            },
+            {
+                path: 'tools',
+                name: "Tools",
+                component: () => import("@/components/Body/Map.vue"),
+                children: [
+                    {
+                        path: 'map',
+                        name: "Map",
+                        component: Map,
+                    },
+                    {
+                        path: 'echart',
+                        name: "Echart",
+                        component: Echart,
+                    }
+                ]
+            },
+            {
+                path: 'donate',
+                name: "Donate",
+                component: Donate,
             }
         ]
-    },
-]
+    }
+];
 
 const router = createRouter({
     history: createMemoryHistory(),
     routes,
-})
+});
 
-export default router
+export default router;
