@@ -20,4 +20,11 @@ export default {
             data,
         })
     },
+    AddProductData(data){
+        return request({
+            url:'/AddProductData',
+            method:"post",
+            data,
+        })
+    }
 }

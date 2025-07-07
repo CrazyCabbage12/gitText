@@ -5,6 +5,7 @@ import UserManagement from "@/components/Body/UserManagement.vue";
 import Echart from "@/components/Body/Echart.vue";
 import Donate from "@/components/Body/Donate.vue";
 import Home  from "@/components/Body/Home.vue"
+import Map from "@/components/Body/Map.vue"
 
 const routes = [
     {
@@ -18,19 +19,18 @@ const routes = [
                 component: Home,
             },
             {
-                path: 'product-management',
-                name: "ProductManagement",
-                component: ProductManagement,
-            },
-            {
-                path: 'user-management',
+                path: 'UserManagement',
                 name: "UserManagement",
                 component: UserManagement,
             },
             {
+                path: 'ProductManagement',
+                name: "ProductManagement",
+                component: ProductManagement,
+            },
+            {
                 path: 'tools',
                 name: "Tools",
-                component: () => import("@/components/Body/Map.vue"),
                 children: [
                     {
                         path: 'map',
@@ -38,7 +38,7 @@ const routes = [
                         component: Map,
                     },
                     {
-                        path: 'echart',
+                        path: 'Echart',
                         name: "Echart",
                         component: Echart,
                     }

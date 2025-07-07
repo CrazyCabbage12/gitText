@@ -7,22 +7,22 @@ const router = useRouter();
 
 const list = ref([
   {
-    path: '/dashboard',
+    path: '/',
     name: 'Dashboard',
     label: '首页',
     icon: 'house',
   },
   {
-    path: '/product-management',
-    name: 'ProductManagement',
+    path: '/UserManagement',
+    name: 'UserManagement',
     label: '商品管理',
-    icon: 'house',
+    icon: 'user',
   },
   {
-    path: '/user-management',
-    name: 'UserManagement',
+    path: '/ProductManagement',
+    name: 'ProductManagement',
     label: '用户管理',
-    icon: 'user',
+    icon: 'house',
   },
   {
     path: '/tools',

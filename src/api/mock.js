@@ -4,3 +4,4 @@ import homeData from '@/api/MockData/homeData.js'
 Mock.mock('/getTableData','get',homeData.GetTableData);
 Mock.mock('/GetCountData','get',homeData.GetCountData);
 Mock.mock('/GetUserData','get',homeData.GetUserData);
+Mock.mock('/AddProductData', 'post', homeData.AddProductData);
