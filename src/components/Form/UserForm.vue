@@ -24,7 +24,7 @@
 </template>
 
 <script setup>
-import { ref, defineProps, defineEmits, watch } from 'vue';
+import {ref, defineProps, defineEmits, watch} from 'vue';
 
 const props = defineProps({
   title: {
@@ -39,6 +39,14 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  editMode: {
+    type: Boolean,
+    default: false,
+  },
+  editData: {
+    type: Object,
+    default: () => ({}),
+  },
 });
 
 const emit = defineEmits(['update:visible', 'submit']);
@@ -49,16 +57,21 @@ const formRef = ref(null);
 
 const rules = {
   name: [
-    { required: true, message: '请输入姓名', trigger: 'blur' },
+    {required: true, message: '请输入姓名', trigger: 'blur'},
   ],
   address: [
-    { required: true, message: '请输入地址', trigger: 'blur' },
+    {required: true, message: '请输入地址', trigger: 'blur'},
   ],
   // 其他字段的规则
 };
 
 watch(() => props.visible, (newVal) => {
   dialogVisible.value = newVal;
+  if (props.editMode && props.editData) {
+    formData.value = {...props.editData};
+  } else {
+    formData.value = {};
+  }
 });
 
 const closeDialog = () => {
@@ -76,7 +89,3 @@ const submitForm = () => {
   });
 };
 </script>
-
-<style scoped lang="less">
-
-</style>

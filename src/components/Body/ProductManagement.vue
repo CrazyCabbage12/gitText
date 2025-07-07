@@ -31,11 +31,13 @@
           :label="item.label"
       />
       <el-table-column fixed="right" label="Operations" min-width="120">
-        <template #default>
-          <el-button link type="primary" size="small" @click="handleClick">
+        <template #default="scope">
+          <el-button link type="primary" size="small" @click="handleDelete(scope.row)">
             删除
           </el-button>
-          <el-button type="primary" size="small">编辑</el-button>
+          <el-button type="primary" size="small" @click="handleEdit(scope.row)">
+            编辑
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -58,6 +60,8 @@
       :fields="TableLable"
       v-model:visible="dialogVisible"
       @submit="handleFormSubmit"
+      :editMode="editMode"
+      :editData="editData"
   />
 </template>
 
@@ -173,37 +177,57 @@ const paginateData = (data, currentPage, pageSize) => {
 
 // 新增表单相关
 const dialogVisible = ref(false); // 对话框显示状态
-const formTitle = "新增用户"; // 表单标题
+const formTitle = ref("新增用户"); // 表单标题
+const editMode = ref(false); // 编辑模式
+const editData = ref({}); // 编辑数据
 
 const openDialog = () => {
+  formTitle.value = "新增用户";
+  editMode.value = false;
   dialogVisible.value = true;
+};
+
+const handleEdit = (row) => {
+  formTitle.value = "编辑用户";
+  editMode.value = true;
+  editData.value = { ...row };
+  dialogVisible.value = true;
+};
+
+const handleDelete = (row) => {
+  // 实现删除逻辑
+  console.log("删除数据:", row);
 };
 
 const handleFormSubmit = async (formData) => {
   console.log("提交的表单数据:", formData);
 
   try {
-    // 将 formData 转换为普通对象
-    const plainFormData = JSON.parse(JSON.stringify(formData));
-    console.log(plainFormData);
-
-    // 直接发送 plainFormData
-    const response = await proxy.$api.AddProductData(plainFormData);
-
-    // 检查 response 中的 code 和 message
-    if (response && response.code === 200) {
-      console.log("数据添加成功", response.message);
-      // 重新获取数据以更新表格
-      GetUserData();
+    if (editMode.value) {
+      // 编辑操作
+      const response = await proxy.$api.EditProductData(formData);
+      if (response && response.code === 200) {
+        console.log("数据更新成功", response.message);
+      } else {
+        console.error("数据更新失败", response.message);
+      }
     } else {
-      console.error("数据添加失败", response.message);
+      // 新增操作
+      const response = await proxy.$api.AddProductData(formData);
+      if (response && response.code === 200) {
+        console.log("数据添加成功", response.message);
+      } else {
+        console.error("数据添加失败", response.message);
+      }
     }
+    // 重新获取数据以更新表格
+    GetUserData();
   } catch (error) {
     // 检查 error 是否有 message 属性
     if (error && error.message) {
-      console.error("添加数据时发生错误", error.message);
+      console.error("提交数据时发生错误", error.message);
     } else {
-      console.error("添加数据时发生未知错误", error);
+      console.error("提交数据时发生未知错误", error);
     }
   }
 };

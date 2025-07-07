@@ -328,5 +328,38 @@ export default {
                 message: "请求参数错误"
             };
         }
+    },
+    EditProductData: (req) => {
+        const data = req.body;
+        let parsedData;
+        if (typeof data === 'string') {
+            try {
+                parsedData = JSON.parse(data);
+            } catch (error) {
+                console.error("解析请求体为 JSON 时出错:", error);
+                return {
+                    code: 400,
+                    message: "请求参数错误"
+                };
+            }
+        } else {
+            parsedData = data;
+        }
+
+        const { id, ...updateData } = parsedData;
+        const index = tabledata.findIndex(item => item.id === id);
+
+        if (index !== -1) {
+            tabledata[index] = { ...tabledata[index], ...updateData };
+            return {
+                code: 200,
+                message: "数据更新成功"
+            };
+        } else {
+            return {
+                code: 404,
+                message: "未找到要更新的数据"
+            };
+        }
     }
 }

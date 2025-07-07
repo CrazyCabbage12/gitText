@@ -26,5 +26,12 @@ export default {
             method:"post",
             data,
         })
+    },
+    EditProductData(data) {
+        return request({
+            url: '/EditProductData',
+            method: "post",
+            data: data,
+        });
     }
 }

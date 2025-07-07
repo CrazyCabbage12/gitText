@@ -5,3 +5,4 @@ Mock.mock('/getTableData','get',homeData.GetTableData);
 Mock.mock('/GetCountData','get',homeData.GetCountData);
 Mock.mock('/GetUserData','get',homeData.GetUserData);
 Mock.mock('/AddProductData', 'post', homeData.AddProductData);
+Mock.mock('/EditProductData', 'post', homeData.EditProductData);
