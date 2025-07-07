@@ -69,104 +69,55 @@
 import { ref, getCurrentInstance, onMounted, reactive } from "vue";
 import UserForm from "@/components/Form/UserForm.vue"; // 引入 UserForm 组件
 
-const config = reactive({
-  name: "",
-});
-
-const handleClick = () => {};
-
 const { proxy } = getCurrentInstance();
 
 const GetUserData = async () => {
   try {
-    const allData = await proxy.$api.GetUserData(); // 获取所有数据
-    // console.log("All Data from Mock:", allData);
-
-    // 检查 allData 是否包含 data 属性
+    const allData = await proxy.$api.GetUserData();
     if (!allData || !allData.data || !allData.data.tableData) {
       console.error("Invalid data structure:", allData);
       return;
     }
-
-    // 更新总数据量
     totalData.value = allData.data.tableData.length;
-
-    // 如果 config.name 有值，则进行筛选
-    let filteredData = allData.data.tableData;
-    if (config.name) {
-      filteredData = filteredData.filter(item => {
-        const value = item[selectedField.value] || ""; // 动态选择筛选字段
-        return value.toLowerCase().includes(config.name.toLowerCase());
-      });
-    }
-
-    // 更新总数据量（筛选后的数据量）
-    totalData.value = filteredData.length;
-
-    // 使用通用分页函数处理分页
-    tableData.value = paginateData(filteredData, currentPage.value, pageSize.value);
+    tableData.value = paginateData(allData.data.tableData, currentPage.value, pageSize.value);
   } catch (error) {
     console.error("Error fetching user data:", error);
   }
 };
 
 const TableLable = reactive([
-  {
-    prop: "address",
-    label: "地址",
-  },
-  {
-    prop: "date",
-    label: "日期",
-  },
-  {
-    prop: "city",
-    label: "城市",
-  },
-  {
-    prop: "zip",
-    label: "邮编",
-  },
-  {
-    prop: "state",
-    label: "州",
-  },
-  {
-    prop: "name",
-    label: "姓名",
-  },
+  { prop: "address", label: "地址" },
+  { prop: "date", label: "日期" },
+  { prop: "city", label: "城市" },
+  { prop: "zip", label: "邮编" },
+  { prop: "state", label: "州" },
+  { prop: "name", label: "姓名" },
 ]);
 
 onMounted(() => {
   GetUserData();
 });
 
-const ForeInilne = reactive({
-  keyWord: "",
-});
-
-const selectedField = ref("name"); // 默认值为 "name"
-
+const ForeInilne = reactive({ keyWord: "" });
+const selectedField = ref("name");
 const tableData = ref([]);
-const currentPage = ref(1); // 当前页码
-const pageSize = ref(10); // 每页显示的条数
-const totalData = ref(0); // 总数据量
+const currentPage = ref(1);
+const pageSize = ref(10);
+const totalData = ref(0);
 
 const HeadleSearch = () => {
-  config.name = ForeInilne.keyWord;
-  // console.log("Search keyword:", config.name);
   GetUserData();
 };
 
 const handleCurrentChange = (newPage) => {
-  currentPage.value = newPage; // 更新当前页码
-  GetUserData(); // 重新获取数据
+  currentPage.value = newPage;
+  GetUserData();
 };
 
 const handleSizeChange = (newSize) => {
-  pageSize.value = newSize; // 更新每页显示条数
-  currentPage.value = 1; // 重置当前页码为第一页
-  GetUserData(); // 重新获取数据
+  pageSize.value = newSize;
+  currentPage.value = 1;
+  GetUserData();
 };
 
 const paginateData = (data, currentPage, pageSize) => {
@@ -175,11 +126,10 @@ const paginateData = (data, currentPage, pageSize) => {
   return data.slice(start, end);
 };
 
-// 新增表单相关
-const dialogVisible = ref(false); // 对话框显示状态
-const formTitle = ref("新增用户"); // 表单标题
-const editMode = ref(false); // 编辑模式
-const editData = ref({}); // 编辑数据
+const dialogVisible = ref(false);
+const formTitle = ref("新增用户");
+const editMode = ref(false);
+const editData = ref({});
 
 const openDialog = () => {
   formTitle.value = "新增用户";
@@ -194,17 +144,23 @@ const handleEdit = (row) => {
   dialogVisible.value = true;
 };
 
-const handleDelete = (row) => {
-  // 实现删除逻辑
-  console.log("删除数据:", row);
+const handleDelete = async (row) => {
+  try {
+    const response = await proxy.$api.DeleteProductData({ id: row.id });
+    if (response && response.code === 200) {
+      console.log("数据删除成功", response.message);
+      GetUserData(); // 重新获取数据以更新表格
+    } else {
+      console.error("数据删除失败", response.message);
+    }
+  } catch (error) {
+    console.error("删除数据时发生错误", error);
+  }
 };
 
 const handleFormSubmit = async (formData) => {
-  console.log("提交的表单数据:", formData);
-
   try {
     if (editMode.value) {
-      // 编辑操作
       const response = await proxy.$api.EditProductData(formData);
       if (response && response.code === 200) {
         console.log("数据更新成功", response.message);
@@ -212,7 +168,6 @@ const handleFormSubmit = async (formData) => {
         console.error("数据更新失败", response.message);
       }
     } else {
-      // 新增操作
       const response = await proxy.$api.AddProductData(formData);
       if (response && response.code === 200) {
         console.log("数据添加成功", response.message);
@@ -220,15 +175,9 @@ const handleFormSubmit = async (formData) => {
         console.error("数据添加失败", response.message);
       }
     }
-    // 重新获取数据以更新表格
-    GetUserData();
+    GetUserData(); // 重新获取数据以更新表格
   } catch (error) {
-    // 检查 error 是否有 message 属性
-    if (error && error.message) {
-      console.error("提交数据时发生错误", error.message);
-    } else {
-      console.error("提交数据时发生未知错误", error);
-    }
+    console.error("提交数据时发生错误", error);
   }
 };
 </script>

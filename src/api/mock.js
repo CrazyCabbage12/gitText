@@ -6,3 +6,4 @@ Mock.mock('/GetCountData','get',homeData.GetCountData);
 Mock.mock('/GetUserData','get',homeData.GetUserData);
 Mock.mock('/AddProductData', 'post', homeData.AddProductData);
 Mock.mock('/EditProductData', 'post', homeData.EditProductData);
+Mock.mock('/DeleteProductData', 'post', homeData.DeleteProductData);

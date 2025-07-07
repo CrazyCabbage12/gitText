@@ -33,5 +33,12 @@ export default {
             method: "post",
             data: data,
         });
+    },
+    DeleteProductData(data) {
+        return request({
+            url: '/DeleteProductData',
+            method: "post",
+            data: data,
+        });
     }
 }

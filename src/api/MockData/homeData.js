@@ -361,5 +361,38 @@ export default {
                 message: "未找到要更新的数据"
             };
         }
+    },
+    DeleteProductData: (req) => {
+        const data = req.body;
+        let parsedData;
+        if (typeof data === 'string') {
+            try {
+                parsedData = JSON.parse(data);
+            } catch (error) {
+                console.error("解析请求体为 JSON 时出错:", error);
+                return {
+                    code: 400,
+                    message: "请求参数错误"
+                };
+            }
+        } else {
+            parsedData = data;
+        }
+
+        const { id } = parsedData;
+        const index = tabledata.findIndex(item => item.id === id);
+
+        if (index !== -1) {
+            tabledata.splice(index, 1); // 删除指定的数组项
+            return {
+                code: 200,
+                message: "数据删除成功"
+            };
+        } else {
+            return {
+                code: 404,
+                message: "未找到要删除的数据"
+            };
+        }
     }
 }
