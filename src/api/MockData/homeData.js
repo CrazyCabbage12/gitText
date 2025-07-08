@@ -394,5 +394,34 @@ export default {
                 message: "未找到要删除的数据"
             };
         }
+    },
+    Login: (req) => {
+        // 解析请求体中的数据
+        const { username, password } = JSON.parse(req.body);
+        console.log("reqkhcbacav",username.username);
+        console.log("reqkhcbacav",username.password);
+        // const {username, password} = JSON.parse(req.body);
+        // 模拟登录逻辑
+        if (username === 'admin111' && password === 'admin111') {
+            // 模拟登录成功
+            return {
+                code: 200,
+                message: '登录成功',
+                data: {
+                    token: 'mock-token', // 模拟的 token
+                    user: {
+                        id: 1,
+                        username: 'admin111',
+                        role: 'admin111'
+                    }
+                }
+            };
+        } else {
+            // 模拟登录失败
+            return {
+                code: 400,
+                message: '用户名或密码错误'
+            };
+        }
     }
 }

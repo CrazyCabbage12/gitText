@@ -40,5 +40,12 @@ export default {
             method: "post",
             data: data,
         });
+    },
+    Login(data) {
+        return request({
+            url: '/Login',
+            method: "post",
+            data: data,
+        });
     }
 }

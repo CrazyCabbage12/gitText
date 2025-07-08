@@ -16,31 +16,31 @@ const list = ref([
     path: '/UserManagement',
     name: 'UserManagement',
     label: '商品管理',
-    icon: 'user',
+    icon: 'ShoppingCart',
   },
   {
     path: '/ProductManagement',
     name: 'ProductManagement',
     label: '用户管理',
-    icon: 'house',
+    icon: 'user',
   },
   {
     path: '/tools',
     name: 'Tools',
     label: '小工具',
-    icon: 'user',
+    icon: 'Compass',
     children: [
       {
         path: '/tools/map',
         name: 'Map',
         label: '地图',
-        icon: 'house'
+        icon: 'Location'
       },
       {
         path: '/tools/echart',
         name: 'Echart',
         label: 'Echart',
-        icon: 'page2'
+        icon: 'CreditCard'
       }
     ]
   },
@@ -48,7 +48,7 @@ const list = ref([
     path: '/donate',
     name: 'Donate',
     label: '打赏',
-    icon: 'user',
+    icon: 'Coin',
   },
 ]);
 

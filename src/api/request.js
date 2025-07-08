@@ -13,7 +13,6 @@ service.interceptors.request.use(function (config) {
         config.data = JSON.stringify(config.data);
         config.headers['Content-Type'] = 'application/json';
     }
-
     return config;
 }, function (error) {
     console.error("请求错误:", error);

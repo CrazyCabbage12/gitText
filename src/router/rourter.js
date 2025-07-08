@@ -1,4 +1,4 @@
-import { createMemoryHistory, createRouter } from 'vue-router';
+import {createMemoryHistory, createRouter, createWebHistory} from 'vue-router';
 import Dashboard from "@/components/HomePage/main.vue";
 import ProductManagement from "@/components/Body/ProductManagement.vue";
 import UserManagement from "@/components/Body/UserManagement.vue";
@@ -6,6 +6,8 @@ import Echart from "@/components/Body/Echart.vue";
 import Donate from "@/components/Body/Donate.vue";
 import Home  from "@/components/Body/Home.vue"
 import Map from "@/components/Body/Map.vue"
+import Login from "@/components/Login/login.vue"
+
 
 const routes = [
     {
@@ -50,11 +52,17 @@ const routes = [
                 component: Donate,
             }
         ]
+    },
+    {
+        path: '/login',
+        name: "login",
+        component:Login ,
+        meta: { requiresAuth: false }
     }
 ];
 
 const router = createRouter({
-    history: createMemoryHistory(),
+    history: createWebHistory(),
     routes,
 });
 
