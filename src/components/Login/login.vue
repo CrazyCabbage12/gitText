@@ -10,7 +10,7 @@
               placeholder="请输入用户名"
           ></el-input>
         </el-form-item>
-        <el-form-item label="密码" prop="password">
+        <el-form-item label="密码" prop="password" >
           <el-input
               v-model="loginForm.password"
               prefix-icon="el-icon-lock"
