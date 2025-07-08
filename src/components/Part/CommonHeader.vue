@@ -4,7 +4,7 @@ import {useRouter} from "vue-router";
 import {useStore} from "@/stores/index.js";
 const router = useRouter();
 const getImageUrl = (user)=>{
-  return new  URL(`../assets/images/${user}.jpg`,import.meta.url).href;
+  return new  URL(`../assets/images/user.jpg`,import.meta.url).href;
 }
 
 const list=ref([
