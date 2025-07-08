@@ -57,6 +57,13 @@ const store = useStore()
 const handleCollapse = ()=>{
   store.state.isCollapse = !store.state.isCollapse
 }
+const handleLogout = () => {
+  // 清除用户的登录状态
+  store.logout();
+
+  // 重定向到登录页面
+  router.push('/login');
+};
 </script>
 
 <template>
@@ -77,7 +84,7 @@ const handleCollapse = ()=>{
               <template #dropdown>
                 <el-dropdown-menu>
                   <el-dropdown-item>个人中心</el-dropdown-item>
-                  <el-dropdown-item>退出</el-dropdown-item>
+                  <el-dropdown-item @click="handleLogout">退出</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
       </el-dropdown>
