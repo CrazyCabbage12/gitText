@@ -30,6 +30,8 @@
 <script setup>
 import {getCurrentInstance, reactive, ref} from 'vue';
 import { useRouter } from "vue-router";
+import { useStore } from '@/stores/index.js';
+const store = useStore();
 
 const router = useRouter();
 const loginFormRef = ref(null);
@@ -50,7 +52,7 @@ const rules = {
   ],
 };
 
-const {proxy} = getCurrentInstance();
+const {proxy,} = getCurrentInstance();
 
 const handleLogin = async () => {
   try {
@@ -59,6 +61,10 @@ const handleLogin = async () => {
     console.log("dgaopcao", response);
     if (response && response.code === 200) {
       console.log("登录成功", response.message);
+      store.setUser(response.data.user.username);
+      store.setToken(response.data.token);
+      console.log("setUser", response.data.user.username);
+      console.log("setToken", response.data.token);
       router.push('/');
     } else {
       console.error("请检查用户与密码是否正确", response.message);
@@ -88,5 +94,13 @@ const handleLogin = async () => {
 .login-title {
   text-align: center;
   margin-bottom: 20px;
+}
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-size: cover;
+  background-position: center;
 }
 </style>

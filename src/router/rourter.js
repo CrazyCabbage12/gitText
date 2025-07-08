@@ -7,7 +7,8 @@ import Donate from "@/components/Body/Donate.vue";
 import Home  from "@/components/Body/Home.vue"
 import Map from "@/components/Body/Map.vue"
 import Login from "@/components/Login/login.vue"
-
+import { useRouter } from "vue-router";
+import { useStore } from "@/stores/index.js";
 
 const routes = [
     {
@@ -64,6 +65,25 @@ const routes = [
 const router = createRouter({
     history: createWebHistory(),
     routes,
+});
+
+router.beforeEach((to, from, next) => {
+    const store = useStore();
+
+    // 如果目标路由是登录页面，直接放行
+    if (to.path === "/login") {
+        next();
+        return;
+    }
+
+    // 如果目标路由需要登录权限
+    if (!store.state.token) {
+        // 重定向到登录页面
+        next({ path: '/login' });
+    } else {
+        // 否则正常跳转
+        next();
+    }
 });
 
 export default router;
