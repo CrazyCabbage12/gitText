@@ -1,12 +1,17 @@
 <script setup>
 import {reactive, ref} from 'vue'
+import img1 from "@/assets/images/DonateImg/thefrist.png"
+import img2 from "@/assets/images/DonateImg/OIP-C.jpg"
+import img3 from "@/assets/images/DonateImg/3.jpg"
+import img4 from "@/assets/images/DonateImg/收款.jpg"
+import img5 from "@/assets/images/DonateImg/支付宝.jpg"
 
 const state = reactive({
-  circleUrl1: 'src/assets/images/DonateImg/thefrist.png',
-  circleUrl2: 'src/assets/images/DonateImg/OIP-C.jpg',
-  circleUrl3: 'src/assets/images/DonateImg/3.jpg',
-  circleUrl4: 'src/assets/images/DonateImg/收款.jpg',
-  circleUrl5: 'src/assets/images/DonateImg/支付宝.jpg',
+  circleUrl1: img1,
+  circleUrl2: img2,
+  circleUrl3: img3,
+  circleUrl4: img4,
+  circleUrl5: img5,
 })
 
 const showThanksDialog = ref(false)

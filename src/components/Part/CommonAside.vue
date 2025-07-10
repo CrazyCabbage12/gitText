@@ -15,7 +15,7 @@ const list = ref([
   {
     path: '/UserManagement',
     name: 'UserManagement',
-    label: '商品管理',
+    label: '也许留言',
     icon: 'ShoppingCart',
   },
   {
