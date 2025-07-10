@@ -1,26 +1,91 @@
 <script setup>
-import {onMounted, onUnmounted, ref, getCurrentInstance, nextTick} from "vue";
+import {onMounted, onUnmounted, ref, getCurrentInstance, nextTick, computed} from "vue";
 import * as echarts from 'echarts';
 import axios from "axios";
-import { watch } from 'vue';
+import { watch} from 'vue';
 
 const {proxy} = getCurrentInstance()
 
 // 响应式数据
 const chart1Type = ref('line')
 const expensePeriod = ref('month')
+const currentTheme = ref('light') // 新增：主题控制
+
+// 计划数据
+const plans = ref([
+  {
+    id: 1,
+    title: '完成项目文档',
+    category: '工作',
+    priority: 'high',
+    completed: false,
+    dueDate: '2025-07-15'
+  },
+  {
+    id: 2,
+    title: '健身计划',
+    category: '健康',
+    priority: 'medium',
+    completed: true,
+    dueDate: '2025-07-10'
+  },
+  {
+    id: 3,
+    title: '学习Vue3新特性',
+    category: '学习',
+    priority: 'high',
+    completed: false,
+    dueDate: '2025-07-20'
+  },
+  {
+    id: 4,
+    title: '整理照片',
+    category: '生活',
+    priority: 'low',
+    completed: true,
+    dueDate: '2025-07-08'
+  }
+])
 
 // 图表实例
 const echartInstance1 = ref(null);
 const echartInstance2 = ref(null);
 const miniChartInstance = ref(null);
 
+// 主题配置
+const themes = {
+  light: {
+    backgroundColor: '#ffffff',
+    textColor: '#333333',
+    borderColor: '#e0e0e0',
+    primaryColor: '#6e8efb',
+    chartTheme: 'light'
+  },
+  dark: {
+    backgroundColor: '#1a1a1a',
+    textColor: '#ffffff',
+    borderColor: '#333333',
+    primaryColor: '#9c27b0',
+    chartTheme: 'dark'
+  },
+  blue: {
+    backgroundColor: '#f0f8ff',
+    textColor: '#0066cc',
+    borderColor: '#b3d9ff',
+    primaryColor: '#0066cc',
+    chartTheme: 'light'
+  }
+}
+
+// 当前主题配置
+const currentThemeConfig = computed(() => themes[currentTheme.value])
+
 // 初始化迷你图表
 const initMiniChart = () => {
   const chartDom = document.getElementById('miniChart1');
   if (!chartDom) return;
 
-  miniChartInstance.value = echarts.init(chartDom);
+  miniChartInstance.value = echarts.init(chartDom, currentThemeConfig.value.chartTheme);
   const option = {
     tooltip: {
       trigger: 'item'
@@ -32,18 +97,19 @@ const initMiniChart = () => {
       itemWidth: 10,
       itemHeight: 10,
       textStyle: {
-        fontSize: 12
+        fontSize: 12,
+        color: currentThemeConfig.value.textColor
       }
     },
     series: [
       {
-        name: '数据分布',
+        name: '计划分布',
         type: 'pie',
         radius: ['40%', '70%'],
         avoidLabelOverlap: false,
         itemStyle: {
           borderRadius: 10,
-          borderColor: '#fff',
+          borderColor: currentThemeConfig.value.backgroundColor,
           borderWidth: 2
         },
         label: {
@@ -54,18 +120,18 @@ const initMiniChart = () => {
           label: {
             show: true,
             fontSize: '12',
-            fontWeight: 'bold'
+            fontWeight: 'bold',
+            color: currentThemeConfig.value.textColor
           }
         },
         labelLine: {
           show: false
         },
         data: [
-          { value: 1048, name: '产品A' },
-          { value: 735, name: '产品B' },
-          { value: 580, name: '产品C' },
-          { value: 484, name: '产品D' },
-          { value: 300, name: '其他' }
+          { value: plans.value.filter(p => p.category === '工作').length, name: '工作' },
+          { value: plans.value.filter(p => p.category === '学习').length, name: '学习' },
+          { value: plans.value.filter(p => p.category === '健康').length, name: '健康' },
+          { value: plans.value.filter(p => p.category === '生活').length, name: '生活' }
         ]
       }
     ]
@@ -80,16 +146,68 @@ const updateChart1 = () => {
 
   const isLine = chart1Type.value === 'line';
   const option = {
+    backgroundColor: currentThemeConfig.value.backgroundColor,
+    title: {
+      text: '',
+      textStyle: {
+        color: currentThemeConfig.value.textColor
+      }
+    },
+    tooltip: {
+      trigger: 'axis'
+    },
+    legend: {
+      data: ['已完成', '新增'],
+      textStyle: {
+        color: currentThemeConfig.value.textColor
+      }
+    },
+    xAxis: {
+      type: 'category',
+      data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+      axisLine: {
+        lineStyle: {
+          color: currentThemeConfig.value.borderColor
+        }
+      },
+      axisLabel: {
+        color: currentThemeConfig.value.textColor
+      }
+    },
+    yAxis: {
+      type: 'value',
+      axisLine: {
+        lineStyle: {
+          color: currentThemeConfig.value.borderColor
+        }
+      },
+      axisLabel: {
+        color: currentThemeConfig.value.textColor
+      },
+      splitLine: {
+        lineStyle: {
+          color: currentThemeConfig.value.borderColor
+        }
+      }
+    },
     series: [
       {
+        name: '已完成',
         type: isLine ? 'line' : 'bar',
         smooth: isLine,
-        data: [10, 11, 13, 11, 12, 12, 9]
+        data: [5, 8, 7, 9, 6, 8, 10],
+        itemStyle: {
+          color: currentThemeConfig.value.primaryColor
+        }
       },
       {
+        name: '新增',
         type: isLine ? 'line' : 'bar',
         smooth: isLine,
-        data: [1, -2, 2, 5, 3, 2, 0]
+        data: [3, 5, 2, 6, 4, 5, 3],
+        itemStyle: {
+          color: '#ff7043'
+        }
       }
     ]
   };
@@ -97,8 +215,75 @@ const updateChart1 = () => {
   echartInstance1.value.setOption(option);
 };
 
+// 初始化图表1
+const initChart1 = () => {
+  const chartDom = document.getElementById('main1');
+  if (!chartDom) return;
+
+  echartInstance1.value = echarts.init(chartDom, currentThemeConfig.value.chartTheme);
+  updateChart1();
+};
+
+// 初始化图表2
+const initChart2 = () => {
+  const chartDom = document.getElementById('main2');
+  if (!chartDom) return;
+
+  echartInstance2.value = echarts.init(chartDom, currentThemeConfig.value.chartTheme);
+  const option = {
+    backgroundColor: currentThemeConfig.value.backgroundColor,
+    title: {
+      text: '',
+      textStyle: {
+        color: currentThemeConfig.value.textColor
+      }
+    },
+    tooltip: {
+      trigger: 'item'
+    },
+    legend: {
+      orient: 'vertical',
+      left: 'left',
+      textStyle: {
+        color: currentThemeConfig.value.textColor
+      }
+    },
+    series: [
+      {
+        name: '时间分配',
+        type: 'pie',
+        radius: '50%',
+        data: [
+          { value: 35, name: '工作' },
+          { value: 20, name: '学习' },
+          { value: 15, name: '健康' },
+          { value: 30, name: '生活' }
+        ],
+        emphasis: {
+          itemStyle: {
+            shadowBlur: 10,
+            shadowOffsetX: 0,
+            shadowColor: 'rgba(0, 0, 0, 0.5)'
+          }
+        }
+      }
+    ]
+  };
+
+  echartInstance2.value.setOption(option);
+};
+
 // 监听图表类型变化
 watch(chart1Type, updateChart1);
+
+// 监听主题变化
+watch(currentTheme, () => {
+  nextTick(() => {
+    initChart1();
+    initChart2();
+    initMiniChart();
+  });
+});
 
 // 在组件挂载时初始化
 onMounted(() => {
@@ -106,8 +291,6 @@ onMounted(() => {
     initChart1();
     initChart2();
     initMiniChart();
-    getTableData();
-    GetCountData();
   });
 });
 
@@ -118,36 +301,67 @@ window.addEventListener('resize', () => {
   miniChartInstance.value?.resize();
 });
 
-// 其余代码保持不变...
+// 计划相关方法
+const togglePlanStatus = (plan) => {
+  plan.completed = !plan.completed;
+  nextTick(() => {
+    initMiniChart();
+  });
+};
+
+const getPriorityClass = (priority) => {
+  return {
+    'priority-high': priority === 'high',
+    'priority-medium': priority === 'medium',
+    'priority-low': priority === 'low'
+  };
+};
+
+const completedPlans = computed(() => plans.value.filter(p => p.completed));
+const pendingPlans = computed(() => plans.value.filter(p => !p.completed));
 </script>
 
 <template>
-  <div class="home-container">
+  <div class="home-container" :style="{ backgroundColor: currentThemeConfig.backgroundColor, color: currentThemeConfig.textColor }">
     <!-- 顶部欢迎区域 -->
-    <div class="welcome-section">
+    <div class="welcome-section" :style="{ background: `linear-gradient(135deg, ${currentThemeConfig.primaryColor}, #a777e3)` }">
       <div class="welcome-content">
-        <h1 class="welcome-title">欢迎来到数据分析平台</h1>
-        <p class="welcome-subtitle">实时监控 | 智能分析 | 数据可视化</p>
+        <h1 class="welcome-title">个人计划箱</h1>
+        <p class="welcome-subtitle">高效管理 | 智能规划 | 数据分析</p>
+
+        <!-- 主题切换 -->
+        <div class="theme-switcher">
+          <el-button
+              v-for="theme in Object.keys(themes)"
+              :key="theme"
+              :type="currentTheme === theme ? 'primary' : 'default'"
+              size="small"
+              @click="currentTheme = theme"
+          >
+            {{ theme === 'light' ? '浅色' : theme === 'dark' ? '深色' : '蓝色' }}
+          </el-button>
+        </div>
+
         <div class="quick-stats">
           <div class="stat-card">
-            <div class="stat-icon"><i class="el-icon-user"></i></div>
+            <el-icon class="stat-icon"><Printer /></el-icon>
             <div class="stat-info">
-              <h3>1,245</h3>
-              <p>活跃用户</p>
+              <h3>{{ plans.length }}</h3>
+              <p>总计划数</p>
             </div>
           </div>
           <div class="stat-card">
-            <div class="stat-icon"><i class="el-icon-data-analysis"></i></div>
+            <el-icon class="stat-icon"><SetUp /></el-icon>
             <div class="stat-info">
-              <h3>86%</h3>
-              <p>数据准确率</p>
+              <h3>{{ completedPlans.length }}</h3>
+              <p>已完成</p>
             </div>
           </div>
           <div class="stat-card">
-            <div class="stat-icon"><i class="el-icon-timer"></i></div>
+            <el-icon class="stat-icon"><CirclePlus /></el-icon>
             <div class="stat-info">
-              <h3>2.5s</h3>
-              <p>平均响应时间</p>
+              <h3>{{ pendingPlans.length }}</h3>
+              <p>待完成</p>
             </div>
           </div>
         </div>
@@ -157,69 +371,82 @@ window.addEventListener('resize', () => {
     <!-- 中间内容区域 -->
     <div class="content-section">
       <el-row :gutter="20">
-        <!-- 左侧：通知公告 -->
+        <!-- 左侧：计划表 -->
         <el-col :span="8">
-          <div class="panel announcements">
+          <div class="panel plan-list">
             <div class="panel-header">
-              <h3><i class="el-icon-bell"></i> 通知公告</h3>
-              <el-button type="text">更多 <i class="el-icon-arrow-right"></i></el-button>
+              <h3><i class="el-icon-tickets"></i> 计划表</h3>
+              <el-button type="text" icon="el-icon-plus">添加</el-button>
             </div>
             <div class="panel-body">
-              <ul class="announcement-list">
-                <li>
-                  <span class="announcement-title">系统维护通知</span>
-                  <span class="announcement-date">2023-07-15</span>
-                </li>
-                <li>
-                  <span class="announcement-title">新增数据导出功能</span>
-                  <span class="announcement-date">2023-07-10</span>
-                </li>
-                <li>
-                  <span class="announcement-title">暑期优惠活动开始啦</span>
-                  <span class="announcement-date">2023-07-05</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </el-col>
-
-        <!-- 中间：数据概览 -->
-        <el-col :span="8">
-          <div class="panel data-overview">
-            <div class="panel-header">
-              <h3><i class="el-icon-pie-chart"></i> 数据概览</h3>
-            </div>
-            <div class="panel-body">
-              <div class="mini-chart">
-                <div id="miniChart1" style="width: 100%; height: 200px;"></div>
+              <div class="plan-item"
+                   v-for="plan in plans"
+                   :key="plan.id"
+                   :class="{ 'plan-completed': plan.completed }"
+                   @click="togglePlanStatus(plan)">
+                <div class="plan-status">
+                  <el-checkbox :model-value="plan.completed"></el-checkbox>
+                </div>
+                <div class="plan-content">
+                  <div class="plan-title" :class="{ 'title-completed': plan.completed }">
+                    {{ plan.title }}
+                  </div>
+                  <div class="plan-meta">
+                    <span class="plan-category">{{ plan.category }}</span>
+                    <span class="plan-date">{{ plan.dueDate }}</span>
+                  </div>
+                </div>
+                <div class="plan-priority" :class="getPriorityClass(plan.priority)">
+                  {{ plan.priority === 'high' ? '高' : plan.priority === 'medium' ? '中' : '低' }}
+                </div>
               </div>
             </div>
           </div>
         </el-col>
 
-        <!-- 右侧：快捷操作 -->
+        <!-- 中间：已完成计划 -->
         <el-col :span="8">
-          <div class="panel quick-actions">
+          <div class="panel completed-plans">
             <div class="panel-header">
-              <h3><i class="el-icon-star-on"></i> 快捷操作</h3>
+              <h3><i class="el-icon-check"></i> 已完成计划</h3>
+              <span class="plan-count">{{ completedPlans.length }}</span>
             </div>
             <div class="panel-body">
-              <div class="action-grid">
-                <div class="action-item">
-                  <i class="el-icon-document"></i>
-                  <span>数据报表</span>
+              <div class="completion-chart">
+                <div id="miniChart1" style="width: 100%; height: 200px;"></div>
+              </div>
+              <div class="completion-stats">
+                <div class="stat-item">
+                  <span class="stat-label">本周完成</span>
+                  <span class="stat-value">12</span>
                 </div>
-                <div class="action-item">
-                  <i class="el-icon-setting"></i>
-                  <span>系统设置</span>
+                <div class="stat-item">
+                  <span class="stat-label">完成率</span>
+                  <span class="stat-value">{{ Math.round((completedPlans.length / plans.length) * 100) }}%</span>
                 </div>
-                <div class="action-item">
-                  <i class="el-icon-upload"></i>
-                  <span>数据导入</span>
-                </div>
-                <div class="action-item">
-                  <i class="el-icon-download"></i>
-                  <span>数据导出</span>
+              </div>
+            </div>
+          </div>
+        </el-col>
+
+        <!-- 右侧：待完成计划 -->
+        <el-col :span="8">
+          <div class="panel pending-plans">
+            <div class="panel-header">
+              <h3><i class="el-icon-time"></i> 待完成计划</h3>
+              <span class="plan-count">{{ pendingPlans.length }}</span>
+            </div>
+            <div class="panel-body">
+              <div class="pending-list">
+                <div class="pending-item" v-for="plan in pendingPlans.slice(0, 4)" :key="plan.id">
+                  <div class="pending-title">{{ plan.title }}</div>
+                  <div class="pending-date">截止: {{ plan.dueDate }}</div>
+                  <div class="pending-progress">
+                    <el-progress
+                        :percentage="plan.completed ? 100 : Math.floor(Math.random() * 60) + 20"
+                        :color="plan.priority === 'high' ? '#F56C6C' : plan.priority === 'medium' ? '#E6A23C' : '#67C23A'">
+                    </el-progress>
+                  </div>
                 </div>
               </div>
             </div>
@@ -234,7 +461,7 @@ window.addEventListener('resize', () => {
         <el-col :span="12">
           <div class="chart-panel">
             <div class="chart-header">
-              <h3>本周天气变化趋势</h3>
+              <h3>任务完成趋势</h3>
               <div class="chart-controls">
                 <el-radio-group v-model="chart1Type" size="mini">
                   <el-radio-button label="line">线形</el-radio-button>
@@ -248,12 +475,7 @@ window.addEventListener('resize', () => {
         <el-col :span="12">
           <div class="chart-panel">
             <div class="chart-header">
-              <h3>生活费用分析</h3>
-              <el-select v-model="expensePeriod" size="mini" style="width: 100px;">
-                <el-option label="本月" value="month"></el-option>
-                <el-option label="本季" value="quarter"></el-option>
-                <el-option label="本年" value="year"></el-option>
-              </el-select>
+              <h3>时间分配分析</h3>
             </div>
             <div id="main2" style="width: 100%; height: 300px;"></div>
           </div>
@@ -262,21 +484,22 @@ window.addEventListener('resize', () => {
     </div>
   </div>
 </template>
+
 <style scoped lang="less">
 .home-container {
   padding: 20px;
-  background-color: #f5f7fa;
   min-height: 100vh;
+  transition: all 0.3s ease;
 }
 
 // 欢迎区域
 .welcome-section {
-  background: linear-gradient(135deg, #6e8efb, #a777e3);
   border-radius: 12px;
   padding: 30px;
   margin-bottom: 20px;
   color: white;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  position: relative;
 
   .welcome-content {
     max-width: 1200px;
@@ -293,6 +516,14 @@ window.addEventListener('resize', () => {
     font-size: 16px;
     margin-bottom: 30px;
     opacity: 0.9;
+  }
+
+  .theme-switcher {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
   }
 
   .quick-stats {
@@ -345,15 +576,16 @@ window.addEventListener('resize', () => {
   margin-bottom: 20px;
 
   .panel {
-    background: white;
+    background: inherit;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     height: 100%;
     overflow: hidden;
+    border: 1px solid v-bind('currentThemeConfig.borderColor');
 
     .panel-header {
       padding: 15px 20px;
-      border-bottom: 1px solid #eee;
+      border-bottom: 1px solid v-bind('currentThemeConfig.borderColor');
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -362,12 +594,27 @@ window.addEventListener('resize', () => {
         margin: 0;
         font-size: 16px;
         font-weight: 600;
-        color: #333;
+        color: v-bind('currentThemeConfig.textColor');
 
         i {
           margin-right: 8px;
-          color: #6e8efb;
+          color: v-bind('currentThemeConfig.primaryColor');
         }
+      }
+
+      .plan-summary {
+        font-size: 14px;
+        color: #999;
+        font-weight: normal;
+        margin-left: 8px;
+      }
+
+      .plan-count {
+        background: v-bind('currentThemeConfig.primaryColor');
+        color: white;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 12px;
       }
     }
 
@@ -376,67 +623,149 @@ window.addEventListener('resize', () => {
     }
   }
 
-  // 通知公告
-  .announcements {
-    .announcement-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
+  // 计划列表
+  .plan-list {
+    .plan-item {
+      display: flex;
+      align-items: center;
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      border: 1px solid v-bind('currentThemeConfig.borderColor');
+      cursor: pointer;
+      transition: all 0.3s;
+      background: v-bind('currentThemeConfig.backgroundColor');
 
-      li {
-        display: flex;
-        justify-content: space-between;
-        padding: 12px 0;
-        border-bottom: 1px solid #f0f0f0;
+      &:hover {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
+      }
 
-        &:last-child {
-          border-bottom: none;
-        }
+      &.plan-completed {
+        background: #f0f9ff;
+        border-color: #67C23A;
 
-        .announcement-title {
-          color: #333;
-          font-size: 14px;
-        }
-
-        .announcement-date {
+        .plan-title {
+          text-decoration: line-through;
           color: #999;
-          font-size: 12px;
+        }
+
+        .plan-meta {
+          opacity: 0.6;
+        }
+      }
+
+      .plan-status {
+        margin-right: 15px;
+      }
+
+      .plan-content {
+        flex: 1;
+
+        .plan-title {
+          font-size: 15px;
+          color: v-bind('currentThemeConfig.textColor');
+          margin-bottom: 6px;
+          font-weight: 500;
+          transition: all 0.3s;
+
+          &.title-completed {
+            text-decoration: line-through;
+            color: #999;
+          }
+        }
+
+        .plan-meta {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          font-size: 13px;
+          color: #999;
+          transition: all 0.3s;
+
+          .plan-category {
+            background: v-bind('currentThemeConfig.primaryColor');
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+          }
+        }
+      }
+
+      .plan-priority {
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: bold;
+        color: white;
+
+        &.priority-high {
+          background: #F56C6C;
+        }
+
+        &.priority-medium {
+          background: #E6A23C;
+        }
+
+        &.priority-low {
+          background: #67C23A;
         }
       }
     }
   }
 
-  // 快捷操作
-  .quick-actions {
-    .action-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 15px;
+  // 已完成计划
+  .completed-plans {
+    .completion-stats {
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-around;
 
-      .action-item {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 20px 10px;
-        border-radius: 6px;
-        background: #f9f9f9;
-        cursor: pointer;
-        transition: all 0.3s;
+      .stat-item {
+        text-align: center;
 
-        &:hover {
-          background: #eef2fe;
-          transform: translateY(-2px);
+        .stat-label {
+          display: block;
+          font-size: 12px;
+          color: #999;
+          margin-bottom: 5px;
         }
 
-        i {
+        .stat-value {
           font-size: 24px;
-          margin-bottom: 10px;
-          color: #6e8efb;
+          font-weight: bold;
+          color: v-bind('currentThemeConfig.textColor');
+        }
+      }
+    }
+  }
+
+  // 待完成计划
+  .pending-plans {
+    .pending-list {
+      .pending-item {
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid v-bind('currentThemeConfig.borderColor');
+
+        &:last-child {
+          border-bottom: none;
+          margin-bottom: 0;
         }
 
-        span {
+        .pending-title {
           font-size: 14px;
-          color: #666;
+          color: v-bind('currentThemeConfig.textColor');
+          margin-bottom: 5px;
+          display: block;
+        }
+
+        .pending-date {
+          font-size: 12px;
+          color: #999;
+          margin-bottom: 10px;
+          display: block;
         }
       }
     }
@@ -446,10 +775,11 @@ window.addEventListener('resize', () => {
 // 图表区域
 .charts-section {
   .chart-panel {
-    background: white;
+    background: inherit;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     padding: 20px;
+    border: 1px solid v-bind('currentThemeConfig.borderColor');
 
     .chart-header {
       display: flex;
@@ -461,7 +791,7 @@ window.addEventListener('resize', () => {
         margin: 0;
         font-size: 16px;
         font-weight: 600;
-        color: #333;
+        color: v-bind('currentThemeConfig.textColor');
       }
     }
   }
@@ -488,6 +818,11 @@ window.addEventListener('resize', () => {
 
     .welcome-title {
       font-size: 24px;
+    }
+
+    .theme-switcher {
+      position: static;
+      margin-bottom: 20px;
     }
 
     .quick-stats {

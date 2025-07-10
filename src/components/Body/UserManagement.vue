@@ -84,7 +84,7 @@ const addMessage = async () => {
 
   try {
     const res = await request({
-      url: 'http://localhost:8888/message/save',
+      url: 'http://47.98.200.187:9999/message/save',
       method: 'post',
       data: {
         nickname: name,
