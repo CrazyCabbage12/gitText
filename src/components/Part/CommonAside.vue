@@ -21,7 +21,7 @@ const list = ref([
   {
     path: '/ProductManagement',
     name: 'ProductManagement',
-    label: '用户管理',
+    label: '地址管理',
     icon: 'user',
   },
   {
@@ -49,6 +49,12 @@ const list = ref([
     name: 'Donate',
     label: '打赏',
     icon: 'Coin',
+  },
+  {
+    path: '/component',
+    name: 'Component',
+    label: '组件',
+    icon: 'CreditCard',
   },
 ]);
 

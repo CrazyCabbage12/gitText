@@ -9,6 +9,7 @@ import Map from "@/components/Body/Map.vue"
 import Login from "@/components/Login/login.vue"
 import { useRouter } from "vue-router";
 import { useStore } from "@/stores/index.js";
+import component from "@/components/Body/component.vue"
 
 const routes = [
     {
@@ -51,6 +52,11 @@ const routes = [
                 path: 'donate',
                 name: "Donate",
                 component: Donate,
+            },
+            {
+                path: 'component',
+                name: "Component",
+                component: component,
             }
         ]
     },

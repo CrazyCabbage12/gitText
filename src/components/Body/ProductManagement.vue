@@ -1,6 +1,6 @@
 <template>
   <div class="option-select">
-    <el-button type="default" @click="openDialog">新增</el-button>
+    <el-button type="primary" @click="openDialog">新增</el-button>
     <div class="search-controls">
       <el-form :inline="true" :model="ForeInilne">
         <el-form-item label="筛选字段" class="input-button">
@@ -17,22 +17,28 @@
           <el-input placeholder="请输入内容" v-model="ForeInilne.keyWord"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button @click="HeadleSearch">搜索</el-button>
+          <el-button type="success" @click="HeadleSearch">搜索</el-button>
         </el-form-item>
       </el-form>
     </div>
   </div>
   <div class="user-table">
-    <el-table :data="tableData" style="width: 100%">
+    <el-table
+        :data="tableData"
+        style="width: 100%"
+        border
+        stripe
+        row-class-name="table-row"
+    >
       <el-table-column
           v-for="item in TableLable"
           :key="item.prop"
           :prop="item.prop"
           :label="item.label"
       />
-      <el-table-column fixed="right" label="Operations" min-width="120">
+      <el-table-column fixed="right" label="操作" min-width="120">
         <template #default="scope">
-          <el-button link type="primary" size="small" @click="handleDelete(scope.row)">
+          <el-button link type="danger" size="small" @click="handleDelete(scope.row)">
             删除
           </el-button>
           <el-button type="primary" size="small" @click="handleEdit(scope.row)">
@@ -86,19 +92,19 @@ const GetUserData = async () => {
 };
 
 const TableLable = reactive([
-  { prop: "address", label: "地址" },
-  { prop: "date", label: "日期" },
-  { prop: "city", label: "城市" },
-  { prop: "zip", label: "邮编" },
-  { prop: "state", label: "州" },
-  { prop: "name", label: "姓名" },
+  {prop: "address", label: "地址"},
+  {prop: "date", label: "日期"},
+  {prop: "city", label: "城市"},
+  {prop: "zip", label: "邮编"},
+  {prop: "state", label: "州"},
+  {prop: "name", label: "姓名"},
 ]);
 
 onMounted(() => {
   GetUserData();
 });
 
-const ForeInilne = reactive({ keyWord: "" });
+const ForeInilne = reactive({keyWord: ""});
 const selectedField = ref("name");
 const tableData = ref([]);
 const currentPage = ref(1);
@@ -140,13 +146,13 @@ const openDialog = () => {
 const handleEdit = (row) => {
   formTitle.value = "编辑用户";
   editMode.value = true;
-  editData.value = { ...row };
+  editData.value = {...row};
   dialogVisible.value = true;
 };
 
 const handleDelete = async (row) => {
   try {
-    const response = await proxy.$api.DeleteProductData({ id: row.id });
+    const response = await proxy.$api.DeleteProductData({id: row.id});
     if (response && response.code === 200) {
       console.log("数据删除成功", response.message);
       GetUserData(); // 重新获取数据以更新表格
@@ -197,6 +203,23 @@ const handleFormSubmit = async (formData) => {
 
 .input-button {
   margin-left: 10px;
+}
+
+.user-table {
+  margin-bottom: 20px;
+}
+
+.table-row {
+  &:hover {
+    background-color: #f0f9eb;
+  }
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
 }
 
 .mt-4 {

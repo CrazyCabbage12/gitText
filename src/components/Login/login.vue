@@ -101,6 +101,6 @@ const handleLogin = async () => {
   align-items: center;
   height: 100vh;
   background-size: cover;
-  background-position: center;
+  background: linear-gradient(to bottom, #e6f7ff, #ffffff); /* 淡蓝色渐变效果 */
 }
 </style>

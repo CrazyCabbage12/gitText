@@ -2,9 +2,11 @@
 import {ref,computed} from 'vue'
 import {useRouter} from "vue-router";
 import {useStore} from "@/stores/index.js";
+import userimg from "@/assets/images/user.jpg"
+
 const router = useRouter();
 const getImageUrl = (user)=>{
-  return new  URL(`../assets/images/user.jpg`,import.meta.url).href;
+  return new  URL('../assets/images/user.jpg',import.meta.url).href;
 }
 
 const list=ref([
@@ -79,7 +81,7 @@ const handleLogout = () => {
     <div class="right-container">
       <el-dropdown>
           <span class="el-dropdown-link">
-              <img :src="getImageUrl(user)" class="user-img" />
+              <img :src="userimg" class="user-img" />
           </span>
               <template #dropdown>
                 <el-dropdown-menu>
